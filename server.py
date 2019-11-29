@@ -1,35 +1,52 @@
+from socket import *
 import socket
+import threading
+import time
+import sys
+import json
+from chat import Chat
 
-# Create a TCP/IP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+chatserver = Chat()
 
-# Bind the socket to the port
-server_address = ('localhost', 10000)
-print('Starting up on {} port {}'.format(*server_address))
-sock.bind(server_address)
+class ProcessTheClient(threading.Thread):
+	def __init__(self,connection,address):
+		self.connection = connection
+		self.address = address
+		threading.Thread.__init__(self)
 
-# Listen for incoming connections
-sock.listen(1)
+	def run(self):
+		while True:
+			data = self.connection.recv(1024)
+			if data:
+				msg = "{}\r\n\r\n" . format(json.dumps(chatserver.proses(data)))
+				self.connection.sendall(msg.encode('utf-8'))
+			else:
+				break
+		self.connection.close()
 
-while True:
-    # Wait for a connection
-    print('waiting for a connection')
-    connection, client_address = sock.accept()
-    try:
-        print('connection from', client_address)
+class Server(threading.Thread):
+	def __init__(self):
+		self.the_clients = []
+		self.my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		threading.Thread.__init__(self)
 
-        # Receive the data in small chunks and retransmit it
-        while True:
-            data = connection.recv(16)
-            print('received {!r}'.format(data))
-            if data:
-                print('sending data back to the client')
-                connection.sendall(data)
-            else:
-                print('no data from', client_address)
-                break
+	def run(self):
+		self.my_socket.bind(('0.0.0.0',8889))
+		self.my_socket.listen(1)
 
-    finally:
-        # Clean up the connection
-        print("Closing current connection")
-        connection.close()
+		while True:
+			self.connection, self.client_address = self.my_socket.accept()
+			print('connection from', self.client_address)
+			
+			clt = ProcessTheClient(self.connection, self.client_address)
+			clt.start()
+			self.the_clients.append(clt)
+	
+
+def main():
+	svr = Server()
+	svr.start()
+
+if __name__=="__main__":
+	main()
+

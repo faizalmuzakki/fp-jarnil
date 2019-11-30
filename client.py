@@ -23,7 +23,7 @@ class ChatClient:
                 username=j[1].strip()
                 password=j[2].strip()
 
-                return self.login(username,password)
+                return self.login(username, password)
             
             elif (command=='send'):
                 usernameto = j[1].strip()
@@ -31,7 +31,7 @@ class ChatClient:
 
                 for w in j[2:]:
                     message="{} {}" . format(message,w)
-                return self.sendmessage(usernameto,message)
+                return self.sendmessage(usernameto, message)
                 
             elif (command=='inbox'):
                 return self.inbox()
@@ -95,12 +95,9 @@ class ChatClient:
         else:
             return "Error, {}" . format(result['message'])
 
-
-
 if __name__=="__main__":
     cc = ChatClient()
     
     while True:
-        cmdline = input("Command {}:" . format(cc.tokenid))
+        cmdline = input("Command {}: " . format(cc.tokenid))
         print(cc.proses(cmdline))
-

@@ -4,7 +4,7 @@ import sys
 import json
 
 multicast_group = '224.3.29.71'
-server_address = ('10.151.32.140', 10000)
+server_address = ('10.151.30.140', 10000)
 
 # Create the socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

@@ -13,7 +13,7 @@ message['expired_at'] = datetime.datetime.now() + datetime.timedelta(0, lifetime
 
 message['uuid'] = uuid.uuid1()
 
-multicast_group = ('224.3.29.71', 10000)
+multicast_group = ('127.0.0.1', 10000)
 
 # Create the datagram socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

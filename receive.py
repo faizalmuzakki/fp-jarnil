@@ -3,7 +3,7 @@ import struct
 import sys
 import json
 
-multicast_group = '224.3.29.71'
+multicast_group = '127.0.0.1'
 server_address = ('', 10000)
 
 # Create the socket
@@ -21,9 +21,9 @@ sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 uuids = []
 messages = []
 
-print('sending acknowledgement to', ('224.3.29.71', 10000))
+print('sending acknowledgement to', ('127.0.0.1', 10000))
 message = 'ack'
-sock.sendto(message.encode('UTF-8'), ('224.3.29.71', 10000))
+sock.sendto(message.encode('UTF-8'), ('127.0.0.1', 10000))
 
 # Receive/respond loop
 while True:

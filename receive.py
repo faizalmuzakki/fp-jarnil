@@ -34,7 +34,8 @@ while True:
         data = json.loads(data)
         print('received %s bytes from %s' % (data, address))
     except:
-        print('received %s bytes from %s' % (data.decode(), address))
+        data = data.decode()
+        print('received %s bytes from %s' % (data, address))
         print(". . .")
     
     # if (address != socket.gethostbyname(socket.gethostname())):

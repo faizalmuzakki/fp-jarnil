@@ -32,10 +32,11 @@ while True:
 
     try:
         data = json.loads(data)
+        print('received %s bytes from %s' % (data, address))
     except:
+        print('received %s bytes from %s' % (data.decode(), address))
         print(". . .")
     
-    print('received %s bytes from %s' % (data.decode(), address))
     # if (address != socket.gethostbyname(socket.gethostname())):
     if(data == 'ack'):
         for message in messages:

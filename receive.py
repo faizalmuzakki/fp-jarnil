@@ -44,7 +44,7 @@ while True:
         for message in messages:
             if(datetime.datetime.strptime(message['expired_at'], '%Y-%m-%d %H:%M:%S.%f') > datetime.datetime.now()):
                 print('sending message to', address)
-                sock.sendto(json.dumps(message), address)
+                sock.sendto(json.dumps(message).encode('UTF-8'), address)
             else:
                 messages.remove(message)
     else:

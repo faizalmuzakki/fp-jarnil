@@ -35,9 +35,9 @@ while True:
     except:
         print(". . .")
     
-    print('received %s bytes from %s' % (data, address))
+    print('received %s bytes from %s' % (data.decode(), address))
     # if (address != socket.gethostbyname(socket.gethostname())):
-    if(data == "b'ack'"):
+    if(data == 'ack'):
         for message in messages:
             if(message['expired_at'] > datetime.datetime.now()):
                 print('sending message to', address)

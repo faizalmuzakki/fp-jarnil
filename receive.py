@@ -35,11 +35,12 @@ while True:
     except:
         print(". . .")
     
-    print('received %s bytes from %s' % (len(data), address))
+    print('received %s bytes from %s' % (data, address))
     # if (address != socket.gethostbyname(socket.gethostname())):
     if(data == 'ack'):
         for message in messages:
             if(message['expired_at'] > datetime.datetime.now()):
+                print('sending message to', address)
                 sock.sendto(message.encode('UTF-8'), address)
             else:
                 messages.remove(message)

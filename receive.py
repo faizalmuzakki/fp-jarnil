@@ -42,7 +42,7 @@ while True:
     # if (address != socket.gethostbyname(socket.gethostname())):
     if(data == 'ack'):
         for message in messages:
-            if(datetime.strptime(message['expired_at'], '%Y-%m-%d %H:%M:%S') > datetime.datetime.now()):
+            if(datetime.datetime.strptime(message['expired_at'], '%Y-%m-%d %H:%M:%S') > datetime.datetime.now()):
                 print('sending message to', address)
                 sock.sendto(message.encode('UTF-8'), address)
             else:

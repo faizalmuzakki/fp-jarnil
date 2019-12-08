@@ -12,6 +12,7 @@ def getCoord():
     j = json.loads(r.text)
     lat = j['latitude']
     lon = j['longitude']
+    # print(j)
 
     return lat, lon
 

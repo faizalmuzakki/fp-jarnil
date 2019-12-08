@@ -21,11 +21,7 @@ def caldist(destlatitude, destlongitude):
     #the earth is abstracted in to a sphere
     distance = 0
     earthR = 6371.0 #the radius of earth is abstracted t o 6371 kilometers in this program
-    
-    # myla, mylo = getCoord()
-    myla = -7.37929
-    mylo = 112.7040363
-
+    myla, mylo = getCoord()
     myla = math.radians(myla)
     mylo = math.radians(mylo)
     destla = math.radians(destlatitude)
@@ -36,8 +32,8 @@ def caldist(destlatitude, destlongitude):
     distance = earthR*math.sqrt(math.pow(deltaphi,2) + (math.cos(phim)*math.pow(deltalambda,2)))
     return distance
 
-multicast_group = '224.3.29.71'
-server_address = ('', 10000)
+multicast_group = '224.3.29.72'
+server_address = ('', 9999)
 
 # Create the socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -54,14 +50,14 @@ sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 uuids = []
 messages = []
 
-print('sending acknowledgement to', ('224.3.29.71', 10000))
+print('sending acknowledgement to', ('224.3.29.72', 10000))
 message = 'ack'
-sock.sendto(message.encode('UTF-8'), ('224.3.29.71', 10000))
+sock.sendto(message.encode('UTF-8'), ('224.3.29.72', 10000))
 
-lat_from = -7.2660835
-lon_from = 112.7938518
+lat_from = -7.37929
+lon_from = 112.7040363
 
-next_group_addr = ('224.3.29.72', 9999)
+next_group_addr = ('224.3.29.73', 9998)
 
 # Receive/respond loop
 while True:
@@ -77,8 +73,6 @@ while True:
     if(data == 'ack'):
         print('received %s bytes from %s' % (data, address))
         for message in messages:
-            # lat_from = data['coord']['lat']
-            # lon_from = data['coord']['lon']
             distance = caldist(lat_from, lon_from)
 
             if(distance <= float(data['dist_threshold'])):
@@ -91,7 +85,9 @@ while True:
     else:
         # lat_from = data['coord']['lat']
         # lon_from = data['coord']['lon']
+        
         distance = caldist(lat_from, lon_from)
+        print(distance)
 
         if(distance <= float(data['dist_threshold'])):
             if(datetime.datetime.strptime(data['expired_at'], '%Y-%m-%d %H:%M:%S.%f') > datetime.datetime.now()):

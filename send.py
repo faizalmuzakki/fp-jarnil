@@ -21,6 +21,7 @@ message = {}
 lat, lon = getCoord()
 message['coord'] = {'lat': lat, 'lon': lon}
 message['dist_threshold'] = input("dist_threshold: ")
+message['hop'] = int(input("hop: "))
 
 message['message'] = input("message: ")
 

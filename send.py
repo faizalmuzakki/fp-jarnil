@@ -13,6 +13,10 @@ message['expired_at'] = datetime.datetime.now() + datetime.timedelta(0, lifetime
 
 message['uuid'] = uuid.uuid1()
 
+myname = socket.getfqdn(socket.gethostname())
+myaddr = socket.gethostbyname(myname)
+message['src_address'] = myaddr
+
 multicast_group = ('224.3.29.71', 10000)
 
 # Create the datagram socket

@@ -4,8 +4,22 @@ import sys
 import uuid
 import datetime
 import json
+import requests
+
+def getCoord():
+    send_url = 'http://api.ipstack.com/check?access_key=40132d177eb8526286574cccdd93d96c'
+    r = requests.get(send_url)
+    j = json.loads(r.text)
+    lat = j['latitude']
+    lon = j['longitude']
+
+    return lat, lon
 
 message = {}
+
+lat, lon = getCoord()
+message['coord'] = {'lat': lat, 'lon': lon}
+
 message['message'] = input("message: ")
 
 lifetime = int(input("lifetime in seconds: "))

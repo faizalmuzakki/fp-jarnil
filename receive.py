@@ -3,66 +3,27 @@ import struct
 import sys
 import json
 import datetime
-import urllib
+import requests
 import math
-
-def geoDistance(destaddress):
-    #get the ip address of destination
-    destaddr = destaddress
-    #get the ip address of my computer
-    myname = socket.getfqdn(socket.gethostname())
-    myaddr = socket.gethostbyname(myname)
-    #gather the latitude and longitude of hosts
-    #we will use a default coordination
-    (mylatitude, mylongitude) = getcoord(2, myaddr)
-    mylatitude = float(mylatitude)
-    mylongitude = float(mylongitude)
-    #cannot get the geographical coordination of my computer using its current address, maybe because the computer is used within a NAT network.
-    (destlatitude, destlongitude) = getcoord(1, destaddr)
-    destlatitude = float(destlatitude)
-    destlongitude = float(destlongitude)
-    distance = caldist(mylatitude, mylongitude, destlatitude, destlongitude)
-    return distance #distance in km
     
+def getCoord():
+    send_url = 'http://api.ipstack.com/check?access_key=40132d177eb8526286574cccdd93d96c'
+    r = requests.get(send_url)
+    j = json.loads(r.text)
+    lat = j['latitude']
+    lon = j['longitude']
 
-def getcoord(a, addr):
-    #get the latitude and longitude of a given ip address
-    host = 0
-    if a == 1:
-        host = "Destination host"
-    if a == 2:
-        host = "My computer"
-    #send the http get request to http://freegeoip.net
-    url = "http://freegeoip.net/xml/" + addr
-    #print ("request url is " + url)
-    #reply = urllib.request.urlopen(url) ->python3.5 methods
-    reply = urllib.urlopen(url)
-    contents = reply.read()
-    #decode the receiving data and parse it to find the latitude and longitude
-    contents = contents.decode("utf-8")
-    lines = contents.splitlines()
-    latitude = 0
-    longitude = 0
-    for line in lines:
-        a = line.find("<Latitude>") + 1
-        if a:
-            latitude = line[(a+len("<Latitude>")-1) : (len(line) - len("</Latitude>"))]
-            #print (latitude)
-
-        a = line.find("<Longitude>") + 1
-        if a:
-            longitude = line[(a+len("<Longitude>")-1) :(len(line) - len("</Longitude>"))]
-            #print (longitude)
-    return latitude, longitude
+    return lat, lon
 
 
-def caldist(mylatitude, mylongitude, destlatitude, destlongitude):
+def caldist(destlatitude, destlongitude):
     #calculating the geographical distance using the latiude and longitude of both my computer and destination
     #the earth is abstracted in to a sphere
     distance = 0
     earthR = 6371.0 #the radius of earth is abstracted t o 6371 kilometers in this program
-    myla = math.radians(mylatitude)
-    mylo = math.radians(mylongitude)
+    myla, mylo = getCoord()
+    myla = math.radians(myla)
+    mylo = math.radians(mylo)
     destla = math.radians(destlatitude)
     destlo = math.radians(destlongitude)
     deltaphi = myla - destla
@@ -109,8 +70,8 @@ while True:
     if(data == 'ack'):
         print('received %s bytes from %s' % (data, address))
         for message in messages:
-            distance = geoDistance(message['src_address'])
-            
+            distance = caldist(message['src_address'])
+
             if(distance >= dist_threshold):
                 if(datetime.datetime.strptime(message['expired_at'], '%Y-%m-%d %H:%M:%S.%f') > datetime.datetime.now()):
                     print('sending message to', address)
@@ -119,10 +80,16 @@ while True:
                     messages.remove(message)
                     uuids.remove(message['uuid'])
     else:
-        if(datetime.datetime.strptime(data['expired_at'], '%Y-%m-%d %H:%M:%S.%f') > datetime.datetime.now()):
-            if(data['uuid'] not in uuids):
-                uuids.append(data['uuid'])
-                messages.append(data)
+        lat_from = data['coord']['lat']
+        lon_from = data['coord']['lon']
+        distance = caldist(lat_from, lon_from)
+        print(distance)
 
-                print('received %s bytes from %s' % (data, address))
-                print(". . .")
+        if(distance <= dist_threshold):
+            if(datetime.datetime.strptime(data['expired_at'], '%Y-%m-%d %H:%M:%S.%f') > datetime.datetime.now()):
+                if(data['uuid'] not in uuids):
+                    uuids.append(data['uuid'])
+                    messages.append(data)
+
+                    print('received %s bytes from %s with distance %s' % (data, address, distance))
+                    print(". . .")

@@ -16,6 +16,7 @@ def getCoord():
 
     return lat, lon
 
+
 message = {}
 
 lat, lon = getCoord()

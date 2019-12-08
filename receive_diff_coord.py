@@ -56,6 +56,7 @@ print('sending acknowledgement to', ('224.3.29.71', 10000))
 message = 'ack'
 sock.sendto(message.encode('UTF-8'), ('224.3.29.71', 10000))
 
+
 # Receive/respond loop
 while True:
     print('waiting to receive message')

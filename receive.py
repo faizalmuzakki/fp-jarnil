@@ -58,6 +58,7 @@ lat_from = -7.37929
 lon_from = 112.7040363
 dist_threshold = 1000
 
+
 # Receive/respond loop
 while True:
     print('waiting to receive message')

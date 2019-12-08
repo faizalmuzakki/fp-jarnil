@@ -73,7 +73,7 @@ while True:
         for message in messages:
             distance = caldist(lat_from, lon_from)
 
-            if(distance <= dist_threshold):
+            if(distance <= float(data['dist_threshold'])):
                 if(datetime.datetime.strptime(message['expired_at'], '%Y-%m-%d %H:%M:%S.%f') > datetime.datetime.now()):
                     print('sending message to', address)
                     sock.sendto(json.dumps(message).encode('UTF-8'), address)
@@ -87,7 +87,7 @@ while True:
         distance = caldist(lat_from, lon_from)
         print(distance)
 
-        if(distance <= dist_threshold):
+        if(distance <= float(data['dist_threshold'])):
             if(datetime.datetime.strptime(data['expired_at'], '%Y-%m-%d %H:%M:%S.%f') > datetime.datetime.now()):
                 if(data['uuid'] not in uuids):
                     uuids.append(data['uuid'])

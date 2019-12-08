@@ -33,14 +33,12 @@ while True:
 
     try:
         data = json.loads(data)
-        print('received %s bytes from %s' % (data, address))
     except:
         data = data.decode()
-        print('received %s bytes from %s' % (data, address))
-        print(". . .")
-    
+        
     # if (address != socket.gethostbyname(socket.gethostname())):
     if(data == 'ack'):
+        print('received %s bytes from %s' % (data, address))
         for message in messages:
             if(datetime.datetime.strptime(message['expired_at'], '%Y-%m-%d %H:%M:%S.%f') > datetime.datetime.now()):
                 print('sending message to', address)
@@ -49,10 +47,8 @@ while True:
                 messages.remove(message)
     else:
         messages.append(data)
-
-        try:
-            if(data['uuid'] not in uuids):
-                uuids.append(data['uuid'])
-                print(data)
-        except:
-            print(data)
+        
+        if(data['uuid'] not in uuids):
+            uuids.append(data['uuid'])
+            print('received %s bytes from %s' % (data, address))
+            print(". . .")

@@ -3,7 +3,7 @@ import struct
 import sys
 import json
 import datetime
-import urllib
+import urllib.request
 import math
 
 def geoDistance(destaddress):
@@ -37,7 +37,7 @@ def getcoord(a, addr):
     url = "http://freegeoip.net/xml/" + addr
     #print ("request url is " + url)
     #reply = urllib.request.urlopen(url) ->python3.5 methods
-    reply = urllib.urlopen(url)
+    reply = urllib.request.urlopen(url)
     contents = reply.read()
     #decode the receiving data and parse it to find the latitude and longitude
     contents = contents.decode("utf-8")

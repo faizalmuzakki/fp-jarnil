@@ -16,11 +16,11 @@ def getCoord():
 
     return lat, lon
 
-
 message = {}
 
 lat, lon = getCoord()
 message['coord'] = {'lat': lat, 'lon': lon}
+message['dist_threshold'] = input("dist_threshold: ")
 
 message['message'] = input("message: ")
 

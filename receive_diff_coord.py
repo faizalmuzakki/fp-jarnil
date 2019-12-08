@@ -32,8 +32,6 @@ def caldist(destlatitude, destlongitude):
     distance = earthR*math.sqrt(math.pow(deltaphi,2) + (math.cos(phim)*math.pow(deltalambda,2)))
     return distance
 
-dist_threshold = 2000
-
 multicast_group = '224.3.29.71'
 server_address = ('', 10000)
 
@@ -56,6 +54,8 @@ print('sending acknowledgement to', ('224.3.29.71', 10000))
 message = 'ack'
 sock.sendto(message.encode('UTF-8'), ('224.3.29.71', 10000))
 
+lat_from = -7.37929
+lon_from = 112.7040363
 
 # Receive/respond loop
 while True:
@@ -71,9 +71,9 @@ while True:
     if(data == 'ack'):
         print('received %s bytes from %s' % (data, address))
         for message in messages:
-            distance = caldist(message['src_address'])
+            distance = caldist(lat_from, lon_from)
 
-            if(distance >= dist_threshold):
+            if(distance <= dist_threshold):
                 if(datetime.datetime.strptime(message['expired_at'], '%Y-%m-%d %H:%M:%S.%f') > datetime.datetime.now()):
                     print('sending message to', address)
                     sock.sendto(json.dumps(message).encode('UTF-8'), address)
@@ -83,8 +83,6 @@ while True:
     else:
         # lat_from = data['coord']['lat']
         # lon_from = data['coord']['lon']
-        lat_from = -7.37929
-        lon_from = 112.7040363
         
         distance = caldist(lat_from, lon_from)
         print(distance)

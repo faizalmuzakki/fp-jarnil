@@ -81,7 +81,7 @@ while True:
             # lon_from = data['coord']['lon']
             distance = caldist(lat_from, lon_from)
 
-            if(distance <= float(data['dist_threshold'])):
+            if(distance <= float(message['dist_threshold'])):
                 if(datetime.datetime.strptime(message['expired_at'], '%Y-%m-%d %H:%M:%S.%f') > datetime.datetime.now()):
                     print('sending message to', address)
                     sock.sendto(json.dumps(message).encode('UTF-8'), address)
